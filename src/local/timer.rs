@@ -12,9 +12,9 @@ bitflags! {
 }
 
 #[derive(Copy, Clone, Debug, PartialEq)]
-pub struct LvtDivideConfiguration(pub u32);
+pub struct LvtDivideValue(pub u32);
 
-impl From<DivideConfigurationFlags> for LvtDivideConfiguration {
+impl From<DivideConfigurationFlags> for LvtDivideValue {
     fn from(flags: DivideConfigurationFlags) -> Self {
         let a = (flags & DivideConfigurationFlags::DIVIDE_BITS_0_1).bits();
         let b = (flags & DivideConfigurationFlags::DIVIDE_BITS_3).bits();
@@ -22,18 +22,15 @@ impl From<DivideConfigurationFlags> for LvtDivideConfiguration {
 
         let divisor = (2 as u8).rotate_left(c);
 
-        LvtDivideConfiguration(divisor as u32)
+        LvtDivideValue(divisor as u32)
     }
 }
 
-impl TryFrom<LvtDivideConfiguration> for DivideConfigurationFlags {
+impl TryFrom<LvtDivideValue> for DivideConfigurationFlags {
     type Error = &'static str;
 
-    fn try_from(divisor: LvtDivideConfiguration) -> Result<Self, Self::Error> {
-        let twofivesix = (divisor.0 as u32 & 1) << 8;
-        let divisor = twofivesix | (divisor.0 as u32 & !1);
-
-        let bits = match divisor {
+    fn try_from(divisor: LvtDivideValue) -> Result<Self, Self::Error> {
+        let bits = match divisor.0 {
             2   => Ok(0x0),
             4   => Ok(0x1),
             8   => Ok(0x2),
@@ -59,5 +56,30 @@ impl LocalApicRegister for LvtDivideConfigurationRegister {
 
     unsafe fn write(&self, apic: &dyn LocalApic, value: Self::Value) {
         apic.write_reg_32(LocalApicRegisterIndex::DivideConfiguration, DivideConfigurationFlags::from(value).bits());
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    pub fn test_flags_to_divisor() {
+        assert_eq!(LvtDivideValue::from(DivideConfigurationFlags::from_bits(0xa).unwrap()), 
+            LvtDivideValue(128));
+        assert_eq!(LvtDivideValue::from(DivideConfigurationFlags::from_bits(0xb).unwrap()), 
+            LvtDivideValue(1));
+        assert_eq!(LvtDivideValue::from(DivideConfigurationFlags::from_bits(0x3).unwrap()), 
+            LvtDivideValue(16));
+    }
+
+    #[test]
+    pub fn test_divisor_to_flags() {
+        assert_eq!(DivideConfigurationFlags::try_from(LvtDivideValue(128)).expect("flags"), 
+            DivideConfigurationFlags::from_bits(0xa).unwrap());
+        assert_eq!(DivideConfigurationFlags::try_from(LvtDivideValue(1)).expect("flags"), 
+            DivideConfigurationFlags::from_bits(0xb).unwrap());
+        assert_eq!(DivideConfigurationFlags::try_from(LvtDivideValue(16)).expect("flags"), 
+            DivideConfigurationFlags::from_bits(0x3).unwrap());
     }
 }
