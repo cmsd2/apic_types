@@ -10,7 +10,8 @@ bitflags! {
         const REMOTE_IRR         = 0x0000_4000;
         const TRIGGER_MODE       = 0x0000_8000;
         const MASK               = 0x0001_0000;
-        const TIMER_MODE         = 0x0006_0000;
+        const TIMER_MODE_1_BIT   = 0x0002_0000;
+        const TIMER_MODE_2_BIT   = 0x0006_0000;
     }
 }
 
@@ -48,8 +49,13 @@ impl LvtFlags {
         self.contains(LvtFlags::MASK).into()
     }
 
-    pub fn timer_mode(&self) -> LvtTimerMode {
-        LvtTimerMode::try_from((*self & LvtFlags::TIMER_MODE).bits() >> 16)
+    pub fn timer_mode_1_bit(&self) -> LvtTimerMode {
+        LvtTimerMode::try_from((*self & LvtFlags::TIMER_MODE_1_BIT).bits() >> 16)
+            .expect("timer mode")
+    }
+
+    pub fn timer_mode_2_bit(&self) -> LvtTimerMode {
+        LvtTimerMode::try_from((*self & LvtFlags::TIMER_MODE_2_BIT).bits() >> 16)
             .expect("timer mode")
     }
 }
@@ -86,7 +92,7 @@ impl From<LvtMask> for LvtFlags {
 
 impl From<LvtTimerMode> for LvtFlags {
     fn from(mode: LvtTimerMode) -> LvtFlags {
-        Self::from_bits_truncate(mode.as_u32() << 16) & LvtFlags::TIMER_MODE
+        Self::from_bits_truncate(mode.as_u32() << 16)
     }
 }
 
