@@ -1,4 +1,5 @@
 use core::convert::TryFrom;
+use crate::local::InterruptVector;
 
 bitflags! {
     pub struct LvtFlags: u32 {
@@ -20,8 +21,8 @@ impl LvtFlags {
         self.bits()
     }
 
-    pub fn vector(&self) -> u32 {
-        (*self & LvtFlags::VECTOR).bits()
+    pub fn vector(&self) -> InterruptVector {
+        InterruptVector((*self & LvtFlags::VECTOR).bits())
     }
 
     pub fn delivery_mode(&self) -> LvtDeliveryMode {

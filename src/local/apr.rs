@@ -1,4 +1,4 @@
-use crate::local::{LocalApic, LocalApicRegister, LocalApicRegisterIndex};
+use crate::local::{LocalApic, LocalApicRegister, LocalApicRegisterIndex, PriorityClass, PrioritySubClass};
 
 bitflags! {
     pub struct ArbitrationPriorityFlags: u32 {
@@ -9,29 +9,23 @@ bitflags! {
 }
 
 impl ArbitrationPriorityFlags {
-    pub fn priority_class(&self) -> ArbitrationPriorityClass {
-        ArbitrationPriorityClass((*self & ArbitrationPriorityFlags::CLASS).bits() >> 4)
+    pub fn priority_class(&self) -> PriorityClass {
+        PriorityClass((*self & ArbitrationPriorityFlags::CLASS).bits() >> 4)
     }
 
-    pub fn priority_sub_class(&self) -> ArbitrationPrioritySubClass {
-        ArbitrationPrioritySubClass((*self & ArbitrationPriorityFlags::SUB_CLASS).bits())
+    pub fn priority_sub_class(&self) -> PrioritySubClass {
+        PrioritySubClass((*self & ArbitrationPriorityFlags::SUB_CLASS).bits())
     }
 }
 
-#[derive(Copy, Clone, Debug, PartialEq)]
-pub struct ArbitrationPrioritySubClass(pub u32);
-
-#[derive(Copy, Clone, Debug, PartialEq)]
-pub struct ArbitrationPriorityClass(pub u32);
-
-impl From<ArbitrationPriorityClass> for ArbitrationPriorityFlags {
-    fn from(priority_class: ArbitrationPriorityClass) -> Self {
+impl From<PriorityClass> for ArbitrationPriorityFlags {
+    fn from(priority_class: PriorityClass) -> Self {
         Self::from_bits_truncate(priority_class.0 << 4) & ArbitrationPriorityFlags::CLASS
     }
 }
 
-impl From<ArbitrationPrioritySubClass> for ArbitrationPriorityFlags {
-    fn from(priority_sub_class: ArbitrationPrioritySubClass) -> Self {
+impl From<PrioritySubClass> for ArbitrationPriorityFlags {
+    fn from(priority_sub_class: PrioritySubClass) -> Self {
         Self::from_bits_truncate(priority_sub_class.0) & ArbitrationPriorityFlags::SUB_CLASS
     }
 }
@@ -55,10 +49,10 @@ mod tests {
 
     #[test]
     pub fn test_conversions() {
-        let pc = ArbitrationPriorityClass(15);
+        let pc = PriorityClass(15);
         assert_eq!(pc, ArbitrationPriorityFlags::from(pc).priority_class());
 
-        let pc = ArbitrationPrioritySubClass(15);
+        let pc = PrioritySubClass(15);
         assert_eq!(pc, ArbitrationPriorityFlags::from(pc).priority_sub_class());
     }
 }

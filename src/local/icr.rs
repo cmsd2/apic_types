@@ -1,5 +1,6 @@
 use core::convert::TryFrom;
 use core::result::Result;
+use crate::local::InterruptVector;
 
 bitflags! {
     pub struct InterruptCommandFlags: u64 {
@@ -28,6 +29,10 @@ impl InterruptCommandFlags {
     pub fn delivery_mode(&self) -> IcrDeliveryMode {
         let bits = (*self & InterruptCommandFlags::DELIVERY_MODE).bits() >> 8;
         IcrDeliveryMode::try_from(bits as u8).expect("icr delivery mode")
+    }
+
+    pub fn vector(&self) -> InterruptVector {
+        InterruptVector((*self & InterruptCommandFlags::VECTOR).bits() as u32)
     }
 }
 
