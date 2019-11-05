@@ -6,7 +6,7 @@ pub enum LocalApicRegisterIndex {
     Version = 0x30,
     TaskPriority = 0x80,
     ArbitrationPriority = 0x90,
-    ProcessPriority = 0xa0,
+    ProcessorPriority = 0xa0,
     EndOfInterrupt = 0xb0,
     RemoteRead = 0xc0,
     LogicalDestination = 0xd0,
