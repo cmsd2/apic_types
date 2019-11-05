@@ -46,9 +46,9 @@ pub enum LocalApicRegisterIndex {
     LvtLINT0 = 0x350,
     LvtLINT1 = 0x360,
     LvtError = 0x370,
-    InitialCount = 0x380,
-    CurrentCount = 0x390,
-    DivideConfiguration = 0x3e0,
+    TimerInitialCount = 0x380,
+    TimerCurrentCount = 0x390,
+    TimerDivideConfiguration = 0x3e0,
     // ...
 }
 
