@@ -1,3 +1,4 @@
+use crate::local::{LocalApic, LocalApicRegister, LocalApicRegisterIndex};
 use core::convert::TryFrom;
 use core::result::Result;
 use crate::local::InterruptVector;
@@ -22,6 +23,8 @@ bitflags! {
         const DESTINATION_SHORTHAND = 0xc0000;
         const RESERVED3 = 0x00ffffff_fff00000;
         const DESTINATION = 0xff000000_00000000;
+        const LOW_BITS = 0xffffffff;
+        const HIGH_BITS = 0xffffffff_00000000;
     }
 }
 
@@ -33,6 +36,14 @@ impl InterruptCommandFlags {
 
     pub fn vector(&self) -> InterruptVector {
         InterruptVector((*self & InterruptCommandFlags::VECTOR).bits() as u32)
+    }
+
+    pub fn low_word(&self) -> u32 {
+        self.bits() as u32
+    }
+
+    pub fn high_word(&self) -> u32 {
+        (self.bits() >> 32) as u32
     }
 }
 
@@ -78,5 +89,25 @@ impl TryFrom<u8> for IcrDeliveryMode {
             0x7 => Ok(IcrDeliveryMode::Reserved2),
             _ => Err("invalid icr delivery mode")
         }
+    }
+}
+
+pub struct InterruptCommandRegister;
+impl LocalApicRegister for InterruptCommandRegister {
+    type Value = InterruptCommandFlags;
+
+    unsafe fn read(&self, apic: &dyn LocalApic) -> Self::Value {
+        let low = apic.read_reg_32(LocalApicRegisterIndex::InterruptCommand0);
+        let high = apic.read_reg_32(LocalApicRegisterIndex::InterruptCommand1);
+
+        Self::Value::from_bits(((high as u64) << 32) | low as u64).unwrap()
+    }
+
+    unsafe fn write(&self, apic: &dyn LocalApic, value: Self::Value) {
+        let low = value.low_word();
+        let high = value.high_word();
+
+        apic.write_reg_32(LocalApicRegisterIndex::InterruptCommand0, low);
+        apic.write_reg_32(LocalApicRegisterIndex::InterruptCommand1, high);
     }
 }
