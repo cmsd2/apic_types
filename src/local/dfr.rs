@@ -59,8 +59,8 @@ impl DestinationFormatModel {
     }
 }
 
-pub struct LogicalDestinationRegister;
-impl LocalApicRegister for LogicalDestinationRegister {
+pub struct DestinationFormatRegister;
+impl LocalApicRegister for DestinationFormatRegister {
     type Value = DestinationFormatFlags;
 
     unsafe fn read(&self, apic: &dyn LocalApic) -> Self::Value {
