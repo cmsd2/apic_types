@@ -59,6 +59,7 @@ impl LocalApicRegister for LvtTimerDivideConfigurationRegister {
     }
 }
 
+#[derive(Copy, Clone, Debug, PartialEq)]
 pub struct LvtTimerInitialCount(pub u32);
 pub struct LvtTimerInitialCountRegister;
 impl LocalApicRegister for LvtTimerInitialCountRegister {
@@ -73,6 +74,7 @@ impl LocalApicRegister for LvtTimerInitialCountRegister {
     }
 }
 
+#[derive(Copy, Clone, Debug, PartialEq)]
 pub struct LvtTimerCurrentCount(pub u32);
 pub struct LvtTimerCurrentCountRegister;
 impl LocalApicRegister for LvtTimerCurrentCountRegister {

@@ -9,7 +9,7 @@ pub enum LocalApicRegisterIndex {
     ProcessPriority = 0xa0,
     EndOfInterrupt = 0xb0,
     RemoteRead = 0xc0,
-    LocalDestination = 0xd0,
+    LogicalDestination = 0xd0,
     DestinationFormat = 0xe0,
     SpuriousInterrupt = 0xf0,
     InService0 = 0x100,
