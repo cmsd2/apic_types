@@ -1,10 +1,15 @@
 use crate::io::IoApic;
 
 #[derive(Copy, Clone, Debug, PartialEq)]
-pub enum IoApicRegisterIndex {
-    Id,
+#[repr(u32)]
+pub enum IoApic32BitRegisterIndex {
+    Id = 0x0,
     Version,
     ArbitrationId,
+}
+
+#[derive(Copy, Clone, Debug, PartialEq)]
+pub enum IoApic64BitRegisterIndex {
     RedirectionEntry(u32)
 }
 

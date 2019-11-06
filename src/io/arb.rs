@@ -1,4 +1,4 @@
-use crate::io::{IoApic, IoApicRegister, IoApicRegisterIndex};
+use crate::io::{IoApic, IoApicRegister, IoApic32BitRegisterIndex};
 
 bitflags! {
     pub struct ArbitrationIdFlags: u32 {
@@ -27,7 +27,7 @@ impl IoApicRegister for ArbitrationIdRegister {
     type Value = ArbitrationId;
 
     unsafe fn read(&self, apic: &dyn IoApic) -> Self::Value {
-        ArbitrationIdFlags::from_bits_truncate(apic.read_reg_32(IoApicRegisterIndex::ArbitrationId)).id()
+        ArbitrationIdFlags::from_bits_truncate(apic.read_reg_32(IoApic32BitRegisterIndex::ArbitrationId)).id()
     }
 
     unsafe fn write(&self, _apic: &dyn IoApic, _value: Self::Value) {

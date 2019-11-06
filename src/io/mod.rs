@@ -11,9 +11,9 @@ pub use registers::*;
 pub use version::*;
 
 pub trait IoApic {
-    unsafe fn read_reg_32(&self, index: IoApicRegisterIndex) -> u32;
-    unsafe fn write_reg_32(&self, index: IoApicRegisterIndex, value: u32);
+    unsafe fn read_reg_32(&self, index: IoApic32BitRegisterIndex) -> u32;
+    unsafe fn write_reg_32(&self, index: IoApic32BitRegisterIndex, value: u32);
 
-    unsafe fn read_reg_64(&self, index: IoApicRegisterIndex) -> u64;
-    unsafe fn write_reg_64(&self, index: IoApicRegisterIndex, value: u64);
+    unsafe fn read_reg_64(&self, index: IoApic64BitRegisterIndex) -> u64;
+    unsafe fn write_reg_64(&self, index: IoApic64BitRegisterIndex, value: u64);
 }

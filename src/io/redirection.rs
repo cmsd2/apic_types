@@ -1,6 +1,6 @@
 use core::result::Result;
 use core::convert::TryFrom;
-use crate::io::{IoApic, IoApicRegister, IoApicRegisterIndex};
+use crate::io::{IoApic, IoApicRegister, IoApic64BitRegisterIndex};
 
 bitflags! {
     pub struct RedirectionEntryFlags: u64 {
@@ -156,10 +156,10 @@ impl IoApicRegister for RedirectionEntryRegister {
     type Value = RedirectionEntryFlags;
 
     unsafe fn read(&self, apic: &dyn IoApic) -> Self::Value {
-        Self::Value::from_bits_truncate(apic.read_reg_64(IoApicRegisterIndex::RedirectionEntry(self.0)))
+        Self::Value::from_bits_truncate(apic.read_reg_64(IoApic64BitRegisterIndex::RedirectionEntry(self.0)))
     }
 
     unsafe fn write(&self, apic: &dyn IoApic, value: Self::Value) {
-        apic.write_reg_64(IoApicRegisterIndex::RedirectionEntry(self.0), value.bits())
+        apic.write_reg_64(IoApic64BitRegisterIndex::RedirectionEntry(self.0), value.bits())
     }
 }

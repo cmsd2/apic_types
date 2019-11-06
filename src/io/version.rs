@@ -1,4 +1,4 @@
-use crate::io::{IoApic, IoApicRegister, IoApicRegisterIndex};
+use crate::io::{IoApic, IoApicRegister, IoApic32BitRegisterIndex};
 
 bitflags! {
     pub struct VersionFlags: u32 {
@@ -26,7 +26,7 @@ impl IoApicRegister for VersionRegister {
     type Value = VersionFlags;
 
     unsafe fn read(&self, apic: &dyn IoApic) -> Self::Value {
-        VersionFlags::from_bits_truncate(apic.read_reg_32(IoApicRegisterIndex::Version))
+        VersionFlags::from_bits_truncate(apic.read_reg_32(IoApic32BitRegisterIndex::Version))
     }
 
     unsafe fn write(&self, _apic: &dyn IoApic, _value: Self::Value) {
