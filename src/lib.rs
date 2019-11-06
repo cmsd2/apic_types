@@ -4,6 +4,7 @@
 extern crate bitflags;
 
 pub mod local;
+pub mod io;
 
 #[cfg(test)]
 mod tests {
