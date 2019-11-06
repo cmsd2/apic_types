@@ -5,7 +5,7 @@ pub enum IoApicRegisterIndex {
     Id,
     Version,
     ArbitrationId,
-    IrqRedirectionEntry(u32)
+    RedirectionEntry(u32)
 }
 
 pub trait IoApicRegister {
