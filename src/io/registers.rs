@@ -8,9 +8,31 @@ pub enum IoApic32BitRegisterIndex {
     ArbitrationId,
 }
 
+impl IoApic32BitRegisterIndex {
+    pub fn as_u32(&self) -> u32 {
+        *self as u32
+    }
+
+    pub fn as_u64(&self) -> u64 {
+        self.as_u32() as u64
+    }
+}
+
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub enum IoApic64BitRegisterIndex {
     RedirectionEntry(u32)
+}
+
+impl IoApic64BitRegisterIndex {
+    pub fn as_u32(&self) -> u32 {
+        match *self {
+            IoApic64BitRegisterIndex::RedirectionEntry(value) => value
+        }
+    }
+
+    pub fn as_u64(&self) -> u64 {
+        self.as_u32() as u64
+    }
 }
 
 pub trait IoApicRegister {
